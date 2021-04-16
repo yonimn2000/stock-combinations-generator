@@ -5,7 +5,7 @@ namespace StockBuyingHelper
 {
     public class StockCombinationGenerator
     {
-        public Dictionary<string, StockQuantity> MaxStockQuantities { get; private set; }
+        private Dictionary<string, StockQuantity> MaxStockQuantities { get; set; }
         private List<StockQuantity> CurrentCombination { get; set; }
 
         public StockCombinationGenerator(List<StockQuantity> maxStockQuantities)
@@ -50,6 +50,14 @@ namespace StockBuyingHelper
                 Stock = c.Stock,
                 Quantity = c.Quantity
             }).ToList();
+        }
+
+        public ulong GetMaxNumberOfCombinations()
+        {
+            ulong multi = 1;
+            foreach (StockQuantity stockQuantity in MaxStockQuantities.Select(m => m.Value))
+                multi *= stockQuantity.Quantity + 1;
+            return multi;
         }
     }
 }

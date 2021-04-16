@@ -32,5 +32,7 @@ namespace StockBuyingHelper
             => Combinations.OrderByDescending(c => GetCombinationCost(c)).Take(top).ToList();
 
         public static decimal GetCombinationCost(List<StockQuantity> combination) => combination.Sum(s => s.Cost);
+
+        public ulong GetMaxNumberOfCombinations() => Generator.GetMaxNumberOfCombinations();
     }
 }
