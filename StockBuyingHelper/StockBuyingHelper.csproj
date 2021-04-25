@@ -8,6 +8,10 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\Yonatan\OneDrive\Documents\Coding\C#\Command Line Interface\StockBuyingHelper\StockBuyingHelper\YonatanMankovich.StockBuyingHelper.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="YahooFinanceApi" Version="2.1.2" />
   </ItemGroup>

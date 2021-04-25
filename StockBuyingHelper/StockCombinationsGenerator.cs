@@ -4,16 +4,22 @@ using System.Threading.Tasks;
 
 namespace YonatanMankovich.StockBuyingHelper
 {
-    public class BestStockQuantityBuyGenerator
+    /// <summary> Represents a stock quantity combinations generator. </summary>
+    public class StockCombinationsGenerator
     {
-        public IList<StockQuantity[]> Combinations { get; } = new List<StockQuantity[]>();
+        /// <summary> Gets the number of possible stock quantity combinations. </summary>
         public ulong NumberOfPossibleCombinations { get; }
 
+        /// <summary> Returns true if there are any stock quantity combinations. </summary>
+        public bool HasCombinations => Combinations.Any();
+
+        private IList<StockQuantity[]> Combinations { get; } = new List<StockQuantity[]>();
         private decimal Cash { get; }
         private decimal BottomCashLimit { get; }
         private StockQuantity[] MaxStockQuantities { get; }
 
-        public BestStockQuantityBuyGenerator(IEnumerable<StockQuantity> maxStockQuantities, decimal cash)
+        /// <summary> Creates the stock quantity combinations generator. </summary>
+        public StockCombinationsGenerator(IEnumerable<StockQuantity> maxStockQuantities, decimal cash)
         {
             MaxStockQuantities = maxStockQuantities.ToArray();
             NumberOfPossibleCombinations = GetCalculatedNumberOfPossibleCombinations();
@@ -79,8 +85,8 @@ namespace YonatanMankovich.StockBuyingHelper
             return stockQuantities;
         }
 
-        public List<StockQuantity[]> GetBestCombinations(int top)
-            => Combinations.Where(c => c != null).OrderByDescending(c => GetCombinationCost(c)).Take(top).ToList();
+        public IEnumerable<StockQuantity[]> GetBestCombinations(int top)
+            => Combinations.Where(c => c != null).OrderByDescending(c => GetCombinationCost(c)).Take(top).AsEnumerable();
 
         public static decimal GetCombinationCost(IEnumerable<StockQuantity> combination) => combination.Sum(s => s.Cost);
     }

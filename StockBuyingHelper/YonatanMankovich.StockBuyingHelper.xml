@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>YonatanMankovich.StockBuyingHelper</name>
+    </assembly>
+    <members>
+        <member name="T:YonatanMankovich.StockBuyingHelper.Stock">
+            <summary> Represents a stock with a symbol and price. </summary>
+        </member>
+        <member name="P:YonatanMankovich.StockBuyingHelper.Stock.Symbol">
+            <summary> Gets and sets the stock symbol. Converts to upper case when setting. </summary>
+        </member>
+        <member name="P:YonatanMankovich.StockBuyingHelper.Stock.Price">
+            <summary> Gets and sets the stock price. Rounds to 2 decimal digits when setting. </summary>
+        </member>
+        <member name="T:YonatanMankovich.StockBuyingHelper.StockCombinationsGenerator">
+            <summary> Represents a stock combinations generator. </summary>
+        </member>
+        <member name="T:YonatanMankovich.StockBuyingHelper.StockPricesGetter">
+            <summary> Represents an API stock price getter for getting the prices of one or more stocks. </summary>
+        </member>
+        <member name="M:YonatanMankovich.StockBuyingHelper.StockPricesGetter.#ctor(System.String[])">
+            <summary> Creates the stock prices getter from the given symbol(s). </summary>
+            <param name="symbols">The stock ticker symbol(s)</param>
+        </member>
+        <member name="M:YonatanMankovich.StockBuyingHelper.StockPricesGetter.UpdatePrices">
+            <summary> Updates the prices of all the stocks using the online public API. </summary>
+        </member>
+        <member name="P:YonatanMankovich.StockBuyingHelper.StockPricesGetter.Item(System.String)">
+            <summary> Gets the price of the specified stock ticker symbol. </summary>
+        </member>
+        <member name="T:YonatanMankovich.StockBuyingHelper.StockQuantity">
+            <summary> Represents a <see cref="T:YonatanMankovich.StockBuyingHelper.Stock"/> and a quantity. </summary>
+        </member>
+        <member name="P:YonatanMankovich.StockBuyingHelper.StockQuantity.Stock">
+            <summary> Gets or sets a stock. </summary>
+        </member>
+        <member name="P:YonatanMankovich.StockBuyingHelper.StockQuantity.Quantity">
+            <summary> Gets or sets a stock quantity. </summary>
+        </member>
+        <member name="P:YonatanMankovich.StockBuyingHelper.StockQuantity.Cost">
+            <summary> Gets the stock cost. </summary>
+        </member>
+    </members>
+</doc>

@@ -9,26 +9,27 @@ namespace YonatanMankovich.StockBuyingHelperConsole
     {
         static void Main(string[] args)
         {
+            Console.Title = "Stock Buying Helper by Yonatan";
+
             string[] symbols;
             decimal cash;
             List<StockQuantity> stocks = new List<StockQuantity>();
 
             symbols = Prompt("Enter the stock ticker symbols separated by spaces").Trim().Split(' ');
-            cash = decimal.Parse(Prompt("Enter the amount of cash you would like to invest ($)"));
+            cash = Math.Abs(decimal.Parse(Prompt("Enter the amount of cash you would like to invest ($)")));
 
             Highlight("Loading current stock prices...");
-            StockPrices stockPrices = new StockPrices(symbols);
-            stockPrices.UpdatePrices();
+            StockPricesGetter stockPricesGetter = new StockPricesGetter(symbols);
+            stockPricesGetter.UpdatePrices();
             stocks.AddRange(symbols.Select(symbol => new StockQuantity
             {
                 Stock = new Stock
                 {
                     Symbol = symbol,
-                    Price = stockPrices[symbol]
+                    Price = stockPricesGetter[symbol]
                 },
-                Quantity = (uint)Math.Floor(cash / stockPrices[symbol])
+                Quantity = (uint)Math.Floor(cash / stockPricesGetter[symbol])
             }));
-            stocks = stocks.OrderByDescending(s => s.Stock.Price).ToList();
 
             Console.WriteLine();
             Underline($"Loaded initial stock prices (as of {DateTime.Now})");
@@ -40,7 +41,7 @@ namespace YonatanMankovich.StockBuyingHelperConsole
             foreach (StockQuantity stockMaxBuyQuantity in stocks)
                 Console.WriteLine(stockMaxBuyQuantity);
 
-            BestStockQuantityBuyGenerator generator = new BestStockQuantityBuyGenerator(stocks, cash);
+            StockCombinationsGenerator generator = new StockCombinationsGenerator(stocks, cash);
 
             Console.WriteLine();
             Underline("Number of possible combinations");
@@ -51,14 +52,14 @@ namespace YonatanMankovich.StockBuyingHelperConsole
             generator.GenerateCombinations();
 
             Console.WriteLine();
-            if (generator.Combinations.Count > 0)
+            if (generator.HasCombinations)
             {
                 int baseCursorTop = Console.CursorTop;
-                while(true)
+                while (true)
                 {
-                    stockPrices.UpdatePrices();
+                    stockPricesGetter.UpdatePrices();
                     foreach (StockQuantity stock in stocks)
-                        stock.Stock.Price = stockPrices[stock.Stock.Symbol];
+                        stock.Stock.Price = stockPricesGetter[stock.Stock.Symbol];
 
                     Underline($"Updated stock prices (as of {DateTime.Now})");
                     foreach (Stock stock in stocks.Select(s => s.Stock))
@@ -69,10 +70,11 @@ namespace YonatanMankovich.StockBuyingHelperConsole
 
                     Console.WriteLine();
                     Underline("Buy one of these quantities");
-                    Console.WriteLine(string.Join("\t", generator.Combinations[0].Select(c => c.Stock.Symbol)) + "\tLeft\tCost");
-                    foreach (StockQuantity[] stockQuantityList in generator.GetBestCombinations(100))
+                    IEnumerable<StockQuantity[]> combinations = generator.GetBestCombinations(100);
+                    Console.WriteLine(string.Join("\t", combinations.First().Select(c => c.Stock.Symbol)) + "\tLeft\tCost");
+                    foreach (StockQuantity[] stockQuantityList in combinations)
                     {
-                        decimal combinationCost = BestStockQuantityBuyGenerator.GetCombinationCost(stockQuantityList);
+                        decimal combinationCost = StockCombinationsGenerator.GetCombinationCost(stockQuantityList);
                         Console.WriteLine(string.Join("\t", stockQuantityList.Select(c => c.Quantity))
                              + "\t$" + (cash - combinationCost).ToString("N") + "\t$" + combinationCost.ToString("N"));
                     }
