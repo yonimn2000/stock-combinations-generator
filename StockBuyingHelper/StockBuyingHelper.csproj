@@ -62,7 +62,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stock.cs" />
-    <Compile Include="StockCombinationGenerator.cs" />
     <Compile Include="StockPrices.cs" />
     <Compile Include="StockQuantity.cs" />
   </ItemGroup>

@@ -1,38 +1,87 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace StockBuyingHelper
 {
     public class BestStockQuantityBuyGenerator
     {
-        public List<List<StockQuantity>> Combinations { get; } = new List<List<StockQuantity>>();
-        public decimal Cash { get; set; }
-        private StockCombinationGenerator Generator { get; set; }
+        public IList<StockQuantity[]> Combinations { get; } = new List<StockQuantity[]>();
+        public ulong NumberOfPossibleCombinations { get; }
 
-        public BestStockQuantityBuyGenerator(List<StockQuantity> maxStockQuantities, decimal cash)
+        private decimal Cash { get; }
+        private decimal BottomCashLimit { get; }
+        private StockQuantity[] MaxStockQuantities { get; }
+
+        public BestStockQuantityBuyGenerator(IEnumerable<StockQuantity> maxStockQuantities, decimal cash)
         {
-            Generator = new StockCombinationGenerator(maxStockQuantities);
+            MaxStockQuantities = maxStockQuantities.ToArray();
+            NumberOfPossibleCombinations = GetCalculatedNumberOfPossibleCombinations();
             Cash = cash;
+            BottomCashLimit = GetBottomCashLimit();
         }
+
+        private ulong GetCalculatedNumberOfPossibleCombinations()
+        {
+            ulong multi = 1;
+            foreach (StockQuantity stockQuantity in MaxStockQuantities)
+                multi *= stockQuantity.Quantity + 1;
+            return multi;
+        }
+
+        // Having a high lower bound helps keep memory usage low.
+        // If there are more than 100K combinations, get a multiplier of 0.9, 0.99, 0.999, ... based on how large the number is.
+        private decimal GetBottomCashLimit() 
+            => Cash * (decimal)(NumberOfPossibleCombinations <= 1E5 ? 0.5 : (1 - 1E4 / NumberOfPossibleCombinations));
 
         public void GenerateCombinations()
         {
-            while (Generator.HasNextCombination())
+            Combinations.Clear(); // Clear list if running again.
+            Parallel.For(0, (long)NumberOfPossibleCombinations, (id) =>
             {
-                List<StockQuantity> combination = Generator.GetNextCombination();
-                decimal cost = GetCombinationCost(combination);
-
-                // Take only the best combinations.
-                if (cost <= Cash && cost > Cash * 0.9m)
-                    Combinations.Add(combination);
-            }
+                // It is much faster to get a combination cost than the combination itself.
+                if (IsCostInRange(GetCombinationCostById((ulong)id)))
+                    Combinations.Add(GetCombinationById((ulong)id));
+            });
         }
 
-        public List<List<StockQuantity>> GetBestCombinations(int top) 
-            => Combinations.OrderByDescending(c => GetCombinationCost(c)).Take(top).ToList();
+        private bool IsCostInRange(decimal cost) => cost <= Cash && cost > BottomCashLimit; // Take only the best combinations.
 
-        public static decimal GetCombinationCost(List<StockQuantity> combination) => combination.Sum(s => s.Cost);
+        private decimal GetCombinationCostById(ulong id)
+        {
+            // Convert an ID into the combination as if all combinations were listed in order.
+            // This algorithm basically converts base ten to base whatever the max stock quantities are.
+            decimal cost = 0;
+            for (int i = 0; i < MaxStockQuantities.Length; i++)
+            {
+                StockQuantity maxStockQuantity = MaxStockQuantities[i];
+                cost += maxStockQuantity.Stock.Price * (uint)(id % (maxStockQuantity.Quantity + 1));
+                id /= maxStockQuantity.Quantity + 1;
+            }
+            return cost;
+        }
 
-        public ulong GetMaxNumberOfCombinations() => Generator.GetMaxNumberOfCombinations();
+        private StockQuantity[] GetCombinationById(ulong id)
+        {
+            // Convert an ID into the combination as if all combinations were listed in order.
+            // This algorithm basically converts base ten to base whatever the max stock quantities are.
+            StockQuantity[] stockQuantities = new StockQuantity[MaxStockQuantities.Length];
+            for (int i = 0; i < MaxStockQuantities.Length; i++)
+            {
+                StockQuantity maxStockQuantity = MaxStockQuantities[i];
+                stockQuantities[i] = new StockQuantity
+                {
+                    Stock = maxStockQuantity.Stock,
+                    Quantity = (uint)(id % (maxStockQuantity.Quantity + 1))
+                };
+                id /= maxStockQuantity.Quantity + 1;
+            }
+            return stockQuantities;
+        }
+
+        public List<StockQuantity[]> GetBestCombinations(int top)
+            => Combinations.Where(c => c != null).OrderByDescending(c => GetCombinationCost(c)).Take(top).ToList();
+
+        public static decimal GetCombinationCost(IEnumerable<StockQuantity> combination) => combination.Sum(s => s.Cost);
     }
 }

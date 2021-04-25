@@ -10,15 +10,15 @@ namespace StockBuyingHelper
         {
             string[] symbols;
             decimal cash;
-            List<StockQuantity> stockMaxBuyQuantities = new List<StockQuantity>();
+            List<StockQuantity> stocks = new List<StockQuantity>();
 
             symbols = Prompt("Enter the stock ticker symbols separated by spaces").Trim().Split(' ');
-            cash = decimal.Parse(Prompt("Enter the amount of cash you want to invest ($)"));
+            cash = decimal.Parse(Prompt("Enter the amount of cash you would like to invest ($)"));
 
-            Highlight("Loading current prices...");
+            Highlight("Loading current stock prices...");
             StockPrices stockPrices = new StockPrices(symbols);
             stockPrices.UpdatePrices();
-            stockMaxBuyQuantities.AddRange(symbols.Select(symbol => new StockQuantity
+            stocks.AddRange(symbols.Select(symbol => new StockQuantity
             {
                 Stock = new Stock
                 {
@@ -27,52 +27,62 @@ namespace StockBuyingHelper
                 },
                 Quantity = (uint)Math.Floor(cash / stockPrices[symbol])
             }));
-            stockMaxBuyQuantities = stockMaxBuyQuantities.OrderByDescending(s => s.Stock.Price).ToList();
+            stocks = stocks.OrderByDescending(s => s.Stock.Price).ToList();
 
             Console.WriteLine();
-            Underline("Loaded");
-            foreach (Stock stock in stockMaxBuyQuantities.Select(s => s.Stock))
+            Underline($"Loaded initial stock prices (as of {DateTime.Now})");
+            foreach (Stock stock in stocks.Select(s => s.Stock))
                 Console.WriteLine(stock);
 
             Console.WriteLine();
-            Underline("Max quantity of each stock");
-            foreach (StockQuantity stockMaxBuyQuantity in stockMaxBuyQuantities)
+            Underline("Max buy quantity of each stock");
+            foreach (StockQuantity stockMaxBuyQuantity in stocks)
                 Console.WriteLine(stockMaxBuyQuantity);
 
-            BestStockQuantityBuyGenerator generator = new BestStockQuantityBuyGenerator(stockMaxBuyQuantities, cash);
-           
-            Console.WriteLine();
-            Underline("Max combinations");
-            Console.WriteLine(generator.GetMaxNumberOfCombinations().ToString("N0"));
+            BestStockQuantityBuyGenerator generator = new BestStockQuantityBuyGenerator(stocks, cash);
 
             Console.WriteLine();
-            Highlight("Crunching numbers...");
+            Underline("Number of possible combinations");
+            Console.WriteLine(generator.NumberOfPossibleCombinations.ToString("N0"));
+
+            Console.WriteLine();
+            Highlight("Generating combinations...");
             generator.GenerateCombinations();
 
-            Console.WriteLine();
             if (generator.Combinations.Count > 0)
             {
+                int baseCursorTop = Console.CursorTop;
                 do
                 {
                     stockPrices.UpdatePrices();
-                    foreach (StockQuantity stock in stockMaxBuyQuantities)
+                    foreach (StockQuantity stock in stocks)
                         stock.Stock.Price = stockPrices[stock.Stock.Symbol];
 
+                    Console.WriteLine();
+                    Underline($"Updated stock prices (as of {DateTime.Now})");
+                    foreach (Stock stock in stocks.Select(s => s.Stock))
+                        Console.WriteLine(stock);
+
+                    Console.WriteLine();
                     Underline("Buy one of these quantities");
                     Console.WriteLine(string.Join("\t", generator.Combinations[0].Select(c => c.Stock.Symbol)) + "\tChange\tCost");
-                    foreach (List<StockQuantity> stockQuantityList in generator.GetBestCombinations(10))
+                    foreach (StockQuantity[] stockQuantityList in generator.GetBestCombinations(100))
                     {
                         decimal combinationCost = BestStockQuantityBuyGenerator.GetCombinationCost(stockQuantityList);
                         Console.WriteLine(string.Join("\t", stockQuantityList.Select(c => c.Quantity))
                              + "\t$" + (cash - combinationCost) + "\t$" + combinationCost);
                     }
+                    Console.WriteLine();
+                    Console.Write("Press ENTER to refresh the stock prices.");
                     Console.ReadLine();
+                    Console.CursorTop = baseCursorTop;
                 } while (true);
             }
             else
+            {
                 WriteInvesre("Not enough cash for a good combination...");
-
-            Console.ReadLine();
+                Console.ReadLine();
+            }
         }
 
         public static string Prompt(string prompt)
