@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using YonatanMankovich.StockBuyingHelper;
 
-namespace StockBuyingHelper
+namespace YonatanMankovich.StockBuyingHelperConsole
 {
     class Program
     {
@@ -49,34 +50,36 @@ namespace StockBuyingHelper
             Highlight("Generating combinations...");
             generator.GenerateCombinations();
 
+            Console.WriteLine();
             if (generator.Combinations.Count > 0)
             {
                 int baseCursorTop = Console.CursorTop;
-                do
+                while(true)
                 {
                     stockPrices.UpdatePrices();
                     foreach (StockQuantity stock in stocks)
                         stock.Stock.Price = stockPrices[stock.Stock.Symbol];
 
-                    Console.WriteLine();
                     Underline($"Updated stock prices (as of {DateTime.Now})");
                     foreach (Stock stock in stocks.Select(s => s.Stock))
                         Console.WriteLine(stock);
 
                     Console.WriteLine();
+                    Highlight("Press ENTER to refresh the stock prices.");
+
+                    Console.WriteLine();
                     Underline("Buy one of these quantities");
-                    Console.WriteLine(string.Join("\t", generator.Combinations[0].Select(c => c.Stock.Symbol)) + "\tChange\tCost");
+                    Console.WriteLine(string.Join("\t", generator.Combinations[0].Select(c => c.Stock.Symbol)) + "\tLeft\tCost");
                     foreach (StockQuantity[] stockQuantityList in generator.GetBestCombinations(100))
                     {
                         decimal combinationCost = BestStockQuantityBuyGenerator.GetCombinationCost(stockQuantityList);
                         Console.WriteLine(string.Join("\t", stockQuantityList.Select(c => c.Quantity))
-                             + "\t$" + (cash - combinationCost) + "\t$" + combinationCost);
+                             + "\t$" + (cash - combinationCost).ToString("N") + "\t$" + combinationCost.ToString("N"));
                     }
-                    Console.WriteLine();
-                    Console.Write("Press ENTER to refresh the stock prices.");
+                    Console.SetWindowPosition(0, baseCursorTop);
                     Console.ReadLine();
                     Console.CursorTop = baseCursorTop;
-                } while (true);
+                }
             }
             else
             {

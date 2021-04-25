@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("StockBuyingHelper")]
+[assembly: AssemblyTitle("Stock Buying Helper")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("StockBuyingHelper")]
-[assembly: AssemblyCopyright("Copyright ©  2021")]
+[assembly: AssemblyCompany("Yonatan Mankovich")]
+[assembly: AssemblyProduct("YonatanMankovich.StockBuyingHelperConsole")]
+[assembly: AssemblyCopyright("Copyright © Yonatan Mankovich 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("f51db58a-2146-4909-8224-fc6abcf31d02")]
+[assembly: Guid("a885184d-f3eb-4dbc-b166-e0814b9b88af")]
 
 // Version information for an assembly consists of the following four values:
 //

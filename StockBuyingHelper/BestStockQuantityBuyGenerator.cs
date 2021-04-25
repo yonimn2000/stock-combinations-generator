@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace StockBuyingHelper
+namespace YonatanMankovich.StockBuyingHelper
 {
     public class BestStockQuantityBuyGenerator
     {

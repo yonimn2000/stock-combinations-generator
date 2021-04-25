@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace StockBuyingHelper
+namespace YonatanMankovich.StockBuyingHelper
 {
     public class Stock
     {

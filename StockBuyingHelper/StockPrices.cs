@@ -2,7 +2,7 @@
 using System.Linq;
 using YahooFinanceApi;
 
-namespace StockBuyingHelper
+namespace YonatanMankovich.StockBuyingHelper
 {
     public class StockPrices
     {
