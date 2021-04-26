@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -13,15 +14,34 @@ namespace YonatanMankovich.StockBuyingHelper
         /// <summary> Returns true if there are any stock quantity combinations. </summary>
         public bool HasCombinations => Combinations.Any();
 
+        /// <summary> Gets the <see cref="Stock"/> objects that were added to the generator. </summary>
+        public IEnumerable<Stock> Stocks => MaxStockQuantities.Select(s => s.Stock);
+
+        /// <summary> Gets the max quantities of stock that one can buy with the available amount of cash. </summary>
+        public StockQuantity[] MaxStockQuantities { get; }
+
         private IList<StockQuantity[]> Combinations { get; } = new List<StockQuantity[]>();
         private decimal Cash { get; }
         private decimal BottomCashLimit { get; }
-        private StockQuantity[] MaxStockQuantities { get; }
+        private StockPricesGetter StockPricesGetter { get; }
 
         /// <summary> Creates the stock quantity combinations generator. </summary>
-        public StockCombinationsGenerator(IEnumerable<StockQuantity> maxStockQuantities, decimal cash)
+        /// <param name="stockSymbols"> A list of stock ticker symbols. </param>
+        /// <param name="cash"> The amount of cash available for trade. </param>
+        public StockCombinationsGenerator(IEnumerable<string> stockSymbols, decimal cash)
         {
-            MaxStockQuantities = maxStockQuantities.ToArray();
+            StockPricesGetter = new StockPricesGetter(stockSymbols.ToArray());
+            StockPricesGetter.UpdatePrices();
+            MaxStockQuantities = stockSymbols.Select(symbol => new StockQuantity
+            {
+                Stock = new Stock
+                {
+                    Symbol = symbol,
+                    Price = StockPricesGetter[symbol]
+                },
+                Quantity = (uint)Math.Floor(cash / StockPricesGetter[symbol])
+            }).ToArray();
+
             NumberOfPossibleCombinations = GetCalculatedNumberOfPossibleCombinations();
             Cash = cash;
             BottomCashLimit = GetBottomCashLimit();
@@ -40,6 +60,7 @@ namespace YonatanMankovich.StockBuyingHelper
         private decimal GetBottomCashLimit() 
             => Cash * (decimal)(NumberOfPossibleCombinations <= 1E5 ? 0.5 : (1 - 1E4 / NumberOfPossibleCombinations));
 
+        /// <summary> Generates all stock quantity combinations and stores the best ones. </summary>
         public void GenerateCombinations()
         {
             Combinations.Clear(); // Clear list if running again.
@@ -85,9 +106,21 @@ namespace YonatanMankovich.StockBuyingHelper
             return stockQuantities;
         }
 
+        /// <summary> Updates the prices of all the stocks using the online public API. </summary>
+        public void UpdateStockPrices()
+        {
+            StockPricesGetter.UpdatePrices();
+            foreach (Stock stock in Stocks)
+                stock.Price = StockPricesGetter[stock.Symbol];
+        }
+        
+        /// <summary> Gets the best stock quantity combinations. </summary>
+        /// <param name="top">Specifies how many combinations to return.</param>
         public IEnumerable<StockQuantity[]> GetBestCombinations(int top)
             => Combinations.Where(c => c != null).OrderByDescending(c => GetCombinationCost(c)).Take(top).AsEnumerable();
 
+        /// <summary> Gets the cost of all the stocks and quantities in the given combination. </summary>
+        /// <param name="combination">The given combination. </param>
         public static decimal GetCombinationCost(IEnumerable<StockQuantity> combination) => combination.Sum(s => s.Cost);
     }
 }

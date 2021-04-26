@@ -14,7 +14,16 @@
             <summary> Gets and sets the stock price. Rounds to 2 decimal digits when setting. </summary>
         </member>
         <member name="T:YonatanMankovich.StockBuyingHelper.StockCombinationsGenerator">
-            <summary> Represents a stock combinations generator. </summary>
+            <summary> Represents a stock quantity combinations generator. </summary>
+        </member>
+        <member name="P:YonatanMankovich.StockBuyingHelper.StockCombinationsGenerator.NumberOfPossibleCombinations">
+            <summary> Gets the number of possible stock quantity combinations. </summary>
+        </member>
+        <member name="P:YonatanMankovich.StockBuyingHelper.StockCombinationsGenerator.HasCombinations">
+            <summary> Returns true if there are any stock quantity combinations. </summary>
+        </member>
+        <member name="M:YonatanMankovich.StockBuyingHelper.StockCombinationsGenerator.#ctor(System.Collections.Generic.IEnumerable{System.String},System.Decimal)">
+            <summary> Creates the stock quantity combinations generator. </summary>
         </member>
         <member name="T:YonatanMankovich.StockBuyingHelper.StockPricesGetter">
             <summary> Represents an API stock price getter for getting the prices of one or more stocks. </summary>
