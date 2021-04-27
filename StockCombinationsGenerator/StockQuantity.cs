@@ -1,6 +1,6 @@
-﻿namespace YonatanMankovich.StockBuyingHelper
+﻿namespace YonatanMankovich.StockCombinationsGenerator
 {
-    /// <summary> Represents a <see cref="StockBuyingHelper.Stock"/> and a quantity. </summary>
+    /// <summary> Represents a <see cref="StockCombinationsGenerator.Stock"/> and a quantity. </summary>
     public class StockQuantity
     {
         /// <summary> Gets or sets a stock. </summary>

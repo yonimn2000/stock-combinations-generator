@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace YonatanMankovich.StockBuyingHelper
+namespace YonatanMankovich.StockCombinationsGenerator
 {
     /// <summary> Represents a stock with a symbol and price. </summary>
     public class Stock

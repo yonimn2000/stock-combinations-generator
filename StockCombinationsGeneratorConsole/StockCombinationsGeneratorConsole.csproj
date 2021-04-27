@@ -7,8 +7,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{A885184D-F3EB-4DBC-B166-E0814B9B88AF}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>YonatanMankovich.StockBuyingHelperConsole</RootNamespace>
-    <AssemblyName>Stock Buying Helper</AssemblyName>
+    <RootNamespace>YonatanMankovich.StockCombinationsGeneratorConsole</RootNamespace>
+    <AssemblyName>Stock Combinations Generator</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -58,7 +58,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\StockBuyingHelper\StockBuyingHelper.csproj">
+    <ProjectReference Include="..\StockCombinationsGenerator\StockCombinationsGenerator.csproj">
       <Project>{7cf63751-dd32-49f1-81b8-4b5f265beaa0}</Project>
       <Name>StockBuyingHelper</Name>
     </ProjectReference>

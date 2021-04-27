@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Stock Buying Helper")]
+[assembly: AssemblyTitle("Stock Combinations Generator")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Yonatan Mankovich")]
-[assembly: AssemblyProduct("YonatanMankovich.StockBuyingHelperConsole")]
+[assembly: AssemblyProduct("YonatanMankovich.StockCombinationsGeneratorConsole")]
 [assembly: AssemblyCopyright("Copyright © Yonatan Mankovich 2021")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

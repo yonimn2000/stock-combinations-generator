@@ -2,7 +2,7 @@
 using System.Linq;
 using YahooFinanceApi;
 
-namespace YonatanMankovich.StockBuyingHelper
+namespace YonatanMankovich.StockCombinationsGenerator
 {
     /// <summary> Represents an API stock price getter for getting the prices of one or more stocks. </summary>
     public class StockPricesGetter

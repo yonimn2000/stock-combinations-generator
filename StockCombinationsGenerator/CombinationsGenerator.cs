@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace YonatanMankovich.StockBuyingHelper
+namespace YonatanMankovich.StockCombinationsGenerator
 {
     /// <summary> Represents a stock quantity combinations generator. </summary>
-    public class StockCombinationsGenerator
+    public class CombinationsGenerator
     {
         /// <summary> Gets the number of possible stock quantity combinations. </summary>
         public ulong NumberOfPossibleCombinations { get; }
@@ -28,7 +28,7 @@ namespace YonatanMankovich.StockBuyingHelper
         /// <summary> Creates the stock quantity combinations generator. </summary>
         /// <param name="stockSymbols"> A list of stock ticker symbols. </param>
         /// <param name="cash"> The amount of cash available for trade. </param>
-        public StockCombinationsGenerator(IEnumerable<string> stockSymbols, decimal cash)
+        public CombinationsGenerator(IEnumerable<string> stockSymbols, decimal cash)
         {
             StockPricesGetter = new StockPricesGetter(stockSymbols.ToArray());
             StockPricesGetter.UpdatePrices();

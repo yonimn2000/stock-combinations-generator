@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace YonatanMankovich.StockBuyingHelperConsole
+namespace YonatanMankovich.StockCombinationsGeneratorConsole
 {
     internal static class ConsoleHelpers
     {
