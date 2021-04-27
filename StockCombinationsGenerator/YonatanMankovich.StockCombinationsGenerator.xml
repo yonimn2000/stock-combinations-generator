@@ -4,6 +4,40 @@
         <name>YonatanMankovich.StockCombinationsGenerator</name>
     </assembly>
     <members>
+        <member name="T:YonatanMankovich.StockCombinationsGenerator.CombinationsGenerator">
+            <summary> Represents a stock quantity combinations generator. </summary>
+        </member>
+        <member name="P:YonatanMankovich.StockCombinationsGenerator.CombinationsGenerator.NumberOfPossibleCombinations">
+            <summary> Gets the number of possible stock quantity combinations. </summary>
+        </member>
+        <member name="P:YonatanMankovich.StockCombinationsGenerator.CombinationsGenerator.HasCombinations">
+            <summary> Returns true if there are any stock quantity combinations. </summary>
+        </member>
+        <member name="P:YonatanMankovich.StockCombinationsGenerator.CombinationsGenerator.Stocks">
+            <summary> Gets the <see cref="T:YonatanMankovich.StockCombinationsGenerator.Stock"/> objects that were added to the generator. </summary>
+        </member>
+        <member name="P:YonatanMankovich.StockCombinationsGenerator.CombinationsGenerator.MaxStockQuantities">
+            <summary> Gets the max quantities of stock that one can buy with the available amount of cash. </summary>
+        </member>
+        <member name="M:YonatanMankovich.StockCombinationsGenerator.CombinationsGenerator.#ctor(System.Collections.Generic.IEnumerable{System.String},System.Decimal)">
+            <summary> Creates the stock quantity combinations generator. </summary>
+            <param name="stockSymbols"> A list of stock ticker symbols. </param>
+            <param name="cash"> The amount of cash available for trade. </param>
+        </member>
+        <member name="M:YonatanMankovich.StockCombinationsGenerator.CombinationsGenerator.GenerateCombinations">
+            <summary> Generates all stock quantity combinations and stores the best ones. </summary>
+        </member>
+        <member name="M:YonatanMankovich.StockCombinationsGenerator.CombinationsGenerator.UpdateStockPrices">
+            <summary> Updates the prices of all the stocks using the online public API. </summary>
+        </member>
+        <member name="M:YonatanMankovich.StockCombinationsGenerator.CombinationsGenerator.GetBestCombinations(System.Int32)">
+            <summary> Gets the best stock quantity combinations. </summary>
+            <param name="top">Specifies how many combinations to return.</param>
+        </member>
+        <member name="M:YonatanMankovich.StockCombinationsGenerator.CombinationsGenerator.GetCombinationCost(System.Collections.Generic.IEnumerable{YonatanMankovich.StockCombinationsGenerator.StockQuantity})">
+            <summary> Gets the cost of all the stocks and quantities in the given combination. </summary>
+            <param name="combination">The given combination. </param>
+        </member>
         <member name="T:YonatanMankovich.StockCombinationsGenerator.Stock">
             <summary> Represents a stock with a symbol and price. </summary>
         </member>
@@ -12,40 +46,6 @@
         </member>
         <member name="P:YonatanMankovich.StockCombinationsGenerator.Stock.Price">
             <summary> Gets and sets the stock price. Rounds to 2 decimal digits when setting. </summary>
-        </member>
-        <member name="T:YonatanMankovich.StockCombinationsGenerator.StockCombinationsGenerator">
-            <summary> Represents a stock quantity combinations generator. </summary>
-        </member>
-        <member name="P:YonatanMankovich.StockCombinationsGenerator.StockCombinationsGenerator.NumberOfPossibleCombinations">
-            <summary> Gets the number of possible stock quantity combinations. </summary>
-        </member>
-        <member name="P:YonatanMankovich.StockCombinationsGenerator.StockCombinationsGenerator.HasCombinations">
-            <summary> Returns true if there are any stock quantity combinations. </summary>
-        </member>
-        <member name="P:YonatanMankovich.StockCombinationsGenerator.StockCombinationsGenerator.Stocks">
-            <summary> Gets the <see cref="T:YonatanMankovich.StockCombinationsGenerator.Stock"/> objects that were added to the generator. </summary>
-        </member>
-        <member name="P:YonatanMankovich.StockCombinationsGenerator.StockCombinationsGenerator.MaxStockQuantities">
-            <summary> Gets the max quantities of stock that one can buy with the available amount of cash. </summary>
-        </member>
-        <member name="M:YonatanMankovich.StockCombinationsGenerator.StockCombinationsGenerator.#ctor(System.Collections.Generic.IEnumerable{System.String},System.Decimal)">
-            <summary> Creates the stock quantity combinations generator. </summary>
-            <param name="stockSymbols"> A list of stock ticker symbols. </param>
-            <param name="cash"> The amount of cash available for trade. </param>
-        </member>
-        <member name="M:YonatanMankovich.StockCombinationsGenerator.StockCombinationsGenerator.GenerateCombinations">
-            <summary> Generates all stock quantity combinations and stores the best ones. </summary>
-        </member>
-        <member name="M:YonatanMankovich.StockCombinationsGenerator.StockCombinationsGenerator.UpdateStockPrices">
-            <summary> Updates the prices of all the stocks using the online public API. </summary>
-        </member>
-        <member name="M:YonatanMankovich.StockCombinationsGenerator.StockCombinationsGenerator.GetBestCombinations(System.Int32)">
-            <summary> Gets the best stock quantity combinations. </summary>
-            <param name="top">Specifies how many combinations to return.</param>
-        </member>
-        <member name="M:YonatanMankovich.StockCombinationsGenerator.StockCombinationsGenerator.GetCombinationCost(System.Collections.Generic.IEnumerable{YonatanMankovich.StockCombinationsGenerator.StockQuantity})">
-            <summary> Gets the cost of all the stocks and quantities in the given combination. </summary>
-            <param name="combination">The given combination. </param>
         </member>
         <member name="T:YonatanMankovich.StockCombinationsGenerator.StockPricesGetter">
             <summary> Represents an API stock price getter for getting the prices of one or more stocks. </summary>

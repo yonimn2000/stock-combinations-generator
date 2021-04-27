@@ -9,10 +9,10 @@ namespace YonatanMankovich.StockCombinationsGeneratorConsole
     {
         static void Main(string[] args)
         {
-            Console.Title = "Stock Buying Helper by Yonatan";
+            Console.Title = "Stock Combinations Generator by Yonatan";
 
             string[] symbols = ConsoleHelpers.Prompt("Enter the stock ticker symbols separated by spaces").Trim().Split(' ');
-            decimal cash = Math.Abs(decimal.Parse(ConsoleHelpers.Prompt("Enter the amount of cash you would like to invest/withdraw ($)")));
+            decimal cash = Math.Abs(decimal.Parse(ConsoleHelpers.Prompt("Enter the amount of cash you would like to trade ($)")));
 
             ConsoleHelpers.Highlight("Loading current stock prices...");
             CombinationsGenerator generator = new CombinationsGenerator(symbols, cash);
