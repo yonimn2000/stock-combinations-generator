@@ -13,29 +13,19 @@ namespace YonatanMankovich.StockCombinationsGeneratorConsole
             return response;
         }
 
-        internal static void WriteInvesre(string text)
-        {
-            InvertConsoleColors();
-            Console.WriteLine(text);
-            InvertConsoleColors();
-        }
+        internal static void WriteInvesre(string text) => WriteInColors(text, Console.ForegroundColor, Console.BackgroundColor);
 
-        internal static void InvertConsoleColors()
-        {
-            ConsoleColor backgroundColor = Console.BackgroundColor;
-            Console.BackgroundColor = Console.ForegroundColor;
-            Console.ForegroundColor = backgroundColor;
-        }
+        internal static void Highlight(string text) => WriteInColors(text, ConsoleColor.Yellow, ConsoleColor.Black);
 
-        internal static void Highlight(string text)
+        internal static void WriteInColors(string text, ConsoleColor background, ConsoleColor foreground)
         {
-            ConsoleColor backgroundColor = Console.BackgroundColor;
-            ConsoleColor foregroundColor = Console.ForegroundColor;
-            Console.BackgroundColor = ConsoleColor.Yellow;
-            Console.ForegroundColor = ConsoleColor.Black;
+            ConsoleColor originalBackgroundColor = Console.BackgroundColor;
+            ConsoleColor originalForegroundColor = Console.ForegroundColor;
+            Console.BackgroundColor = background;
+            Console.ForegroundColor = foreground;
             Console.WriteLine(text);
-            Console.BackgroundColor = backgroundColor;
-            Console.ForegroundColor = foregroundColor;
+            Console.BackgroundColor = originalBackgroundColor;
+            Console.ForegroundColor = originalForegroundColor;
         }
 
         internal static void Underline(string text)

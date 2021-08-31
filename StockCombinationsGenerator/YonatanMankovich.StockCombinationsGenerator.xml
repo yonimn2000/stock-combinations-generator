@@ -19,6 +19,9 @@
         <member name="P:YonatanMankovich.StockCombinationsGenerator.CombinationsGenerator.MaxStockQuantities">
             <summary> Gets the max quantities of stock that one can buy with the available amount of cash. </summary>
         </member>
+        <member name="P:YonatanMankovich.StockCombinationsGenerator.CombinationsGenerator.Cash">
+            <summary> Gets the available amount of cash. </summary>
+        </member>
         <member name="M:YonatanMankovich.StockCombinationsGenerator.CombinationsGenerator.#ctor(System.Collections.Generic.IEnumerable{System.String},System.Decimal)">
             <summary> Creates the stock quantity combinations generator. </summary>
             <param name="stockSymbols"> A list of stock ticker symbols. </param>

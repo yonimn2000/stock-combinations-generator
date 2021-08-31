@@ -16,9 +16,22 @@ namespace YonatanMankovich.StockCombinationsGenerator
         /// <summary> Updates the prices of all the stocks using the online public API. </summary>
         public void UpdatePrices() 
             => Prices = Yahoo.Symbols(Prices.Keys.ToArray()).Fields(Field.RegularMarketPrice).QueryAsync().Result
-                .ToDictionary(x => x.Key, y => (decimal)y.Value.RegularMarketPrice);
+                            .ToDictionary(x => x.Key, y => (decimal)y.Value.RegularMarketPrice);
 
         /// <summary> Gets the price of the specified stock ticker symbol. </summary>
-        public decimal this[string symbol] => Prices[symbol.ToUpper()];
+        public decimal this[string symbol]
+        {
+            get
+            {
+                try
+                {
+                    return Prices[symbol.ToUpper()];
+                }
+                catch (KeyNotFoundException)
+                {
+                    throw new StockSymbolNotFoundException(symbol);
+                }
+            }
+        }
     }
 }

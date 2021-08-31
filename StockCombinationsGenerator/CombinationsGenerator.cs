@@ -20,8 +20,10 @@ namespace YonatanMankovich.StockCombinationsGenerator
         /// <summary> Gets the max quantities of stock that one can buy with the available amount of cash. </summary>
         public StockQuantity[] MaxStockQuantities { get; }
 
+        /// <summary> Gets the available amount of cash. </summary>
+        public decimal Cash { get; }
+
         private IList<StockQuantity[]> Combinations { get; } = new List<StockQuantity[]>();
-        private decimal Cash { get; }
         private decimal BottomCashLimit { get; }
         private StockPricesGetter StockPricesGetter { get; }
 
@@ -30,7 +32,7 @@ namespace YonatanMankovich.StockCombinationsGenerator
         /// <param name="cash"> The amount of cash available for trade. </param>
         public CombinationsGenerator(IEnumerable<string> stockSymbols, decimal cash)
         {
-            StockPricesGetter = new StockPricesGetter(stockSymbols.ToArray());
+            StockPricesGetter = new StockPricesGetter(stockSymbols.Distinct().ToArray());
             StockPricesGetter.UpdatePrices();
             MaxStockQuantities = stockSymbols.Select(symbol => new StockQuantity
             {
