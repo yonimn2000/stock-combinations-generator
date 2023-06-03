@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AssemblyName>YonatanMankovich.$(MSBuildProjectName)</AssemblyName>
+    <RootNamespace>YonatanMankovich.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+    <ApplicationIcon>iconmonstr-chart-5-240.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="iconmonstr-chart.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="iconmonstr-chart-5-240.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="YonatanMankovich.SimpleConsoleMenus" Version="1.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StockCombinationsGenerator\StockCombinationsGenerator.csproj" />
+  </ItemGroup>
+
+</Project>
