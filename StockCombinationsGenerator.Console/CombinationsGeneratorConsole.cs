@@ -8,6 +8,7 @@ namespace YonatanMankovich.StockCombinationsGenerator.Console
         private string[]? Symbols { get; set; }
         private decimal Cash { get; set; }
         private SimpleActionConsoleMenu Menu { get; } = new SimpleActionConsoleMenu("Next action:");
+        private string ApiKey { get; set; }
 
         public CombinationsGeneratorConsole()
         {
@@ -20,12 +21,28 @@ namespace YonatanMankovich.StockCombinationsGenerator.Console
 
         public void Run()
         {
+            LoadApiKey();
             GetInputsAndRegenerate();
 
             while (true)
             {
                 System.Console.WriteLine();
                 Menu.ShowHideAndDoAction();
+            }
+        }
+
+        private void LoadApiKey()
+        {
+            const string ApiKeyFile = "Finnhub.txt";
+
+            if (File.Exists(ApiKeyFile))
+            {
+                ApiKey = File.ReadAllText(ApiKeyFile);
+            }
+            else
+            {
+                ApiKey = GetUserApiKey();
+                File.WriteAllText(ApiKeyFile, ApiKey);
             }
         }
 
@@ -83,7 +100,7 @@ namespace YonatanMankovich.StockCombinationsGenerator.Console
             {
                 try
                 {
-                    Generator = new CombinationsGenerator(Symbols, Cash);
+                    Generator = new CombinationsGenerator(ApiKey, Symbols, Cash);
                     valid = true;
                 }
                 catch (StockSymbolNotFoundException e)
@@ -139,9 +156,21 @@ namespace YonatanMankovich.StockCombinationsGenerator.Console
         private static string[] GetUserSymbols()
         {
             string? inputString;
+
             do inputString = ConsoleHelpers.Prompt("Enter the stock ticker symbols separated by spaces");
             while (string.IsNullOrWhiteSpace(inputString));
+
             return inputString.Trim().ToUpper().Split(' ');
+        }
+
+        private static string GetUserApiKey()
+        {
+            string? inputString;
+
+            do inputString = ConsoleHelpers.Prompt("Enter the Finnhub API key. You can get a free key by registering at https://finnhub.io");
+            while (string.IsNullOrWhiteSpace(inputString));
+
+            return inputString.Trim();
         }
     }
 }

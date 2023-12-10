@@ -28,11 +28,12 @@ namespace YonatanMankovich.StockCombinationsGenerator
         private StockPricesGetter StockPricesGetter { get; }
 
         /// <summary> Creates the stock quantity combinations generator. </summary>
+        /// <param name="apiKey">The <see href="https://finnhub.io"/> API Key.</param>
         /// <param name="stockSymbols"> A list of stock ticker symbols. </param>
         /// <param name="cash"> The amount of cash available for trade. </param>
-        public CombinationsGenerator(IEnumerable<string> stockSymbols, decimal cash)
+        public CombinationsGenerator(string apiKey, IEnumerable<string> stockSymbols, decimal cash)
         {
-            StockPricesGetter = new StockPricesGetter(stockSymbols.Distinct().ToArray());
+            StockPricesGetter = new StockPricesGetter(apiKey, stockSymbols.Distinct().ToArray());
             StockPricesGetter.UpdatePrices();
             MaxStockQuantities = stockSymbols.Select(symbol => new StockQuantity
             {
@@ -59,7 +60,7 @@ namespace YonatanMankovich.StockCombinationsGenerator
 
         // Having a high lower bound helps keep memory usage low.
         // If there are more than 100K combinations, get a multiplier of 0.9, 0.99, 0.999, ... based on how large the number is.
-        private decimal GetBottomCashLimit() 
+        private decimal GetBottomCashLimit()
             => Cash * (decimal)(NumberOfPossibleCombinations <= 1E5 ? 0.5 : (1 - 1E4 / NumberOfPossibleCombinations));
 
         /// <summary> Generates all stock quantity combinations and stores the best ones. </summary>
@@ -115,7 +116,7 @@ namespace YonatanMankovich.StockCombinationsGenerator
             foreach (Stock stock in Stocks)
                 stock.Price = StockPricesGetter[stock.Symbol];
         }
-        
+
         /// <summary> Gets the best stock quantity combinations. </summary>
         /// <param name="top">Specifies how many combinations to return.</param>
         public IEnumerable<StockQuantity[]> GetBestCombinations(int top)

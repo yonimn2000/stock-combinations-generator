@@ -13,8 +13,4 @@
     <DocumentationFile>C:\Users\Yonatan\OneDrive\Documents\Coding\C#\Command Line Interface\StockCombinationsGenerator\StockCombinationsGenerator\YonatanMankovich.StockCombinationsGenerator.xml</DocumentationFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="YahooFinanceApi" Version="2.3.0" />
-  </ItemGroup>
-
 </Project>
