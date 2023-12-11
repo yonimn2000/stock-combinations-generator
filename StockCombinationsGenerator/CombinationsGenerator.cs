@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace YonatanMankovich.StockCombinationsGenerator
         /// <summary> Gets the available amount of cash. </summary>
         public decimal Cash { get; }
 
-        private IList<StockQuantity[]> Combinations { get; } = new List<StockQuantity[]>();
+        private ConcurrentBag<StockQuantity[]> Combinations { get; set; }
         private decimal BottomCashLimit { get; }
         private StockPricesGetter StockPricesGetter { get; }
 
@@ -66,7 +67,7 @@ namespace YonatanMankovich.StockCombinationsGenerator
         /// <summary> Generates all stock quantity combinations and stores the best ones. </summary>
         public void GenerateCombinations()
         {
-            Combinations.Clear(); // Clear list if running again.
+            Combinations = new ConcurrentBag<StockQuantity[]>();
             Parallel.For(0, (long)NumberOfPossibleCombinations, (id) =>
             {
                 // It is much faster to get a combination cost than the combination itself.

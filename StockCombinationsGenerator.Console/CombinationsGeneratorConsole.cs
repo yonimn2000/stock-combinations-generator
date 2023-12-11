@@ -1,4 +1,5 @@
-﻿using YonatanMankovich.SimpleConsoleMenus;
+﻿using ConsoleTables;
+using YonatanMankovich.SimpleConsoleMenus;
 
 namespace YonatanMankovich.StockCombinationsGenerator.Console
 {
@@ -132,14 +133,46 @@ namespace YonatanMankovich.StockCombinationsGenerator.Console
 
             System.Console.WriteLine();
             ConsoleHelpers.Underline("Trade one of these quantities");
+
             IEnumerable<StockQuantity[]> combinations = Generator.GetBestCombinations(100);
-            System.Console.WriteLine(string.Join("\t", combinations.First().Select(c => c.Stock.Symbol)) + "\tLeft\tCost");
+            StockQuantity[] firstCombination = combinations.First();
+            List<string> columns = new List<string>();
+
+            foreach (StockQuantity stockQuantity in firstCombination)
+                columns.Add(stockQuantity.Stock.Symbol + " (Q)");
+
+            foreach (StockQuantity stockQuantity in firstCombination)
+                columns.Add(stockQuantity.Stock.Symbol + " ($)");
+
+            foreach (StockQuantity stockQuantity in firstCombination)
+                columns.Add(stockQuantity.Stock.Symbol + " (%)");
+
+            columns.Add("Left");
+            columns.Add("Cost");
+
+            ConsoleTable consoleTable = new ConsoleTable().AddColumn(columns);
+
             foreach (StockQuantity[] stockQuantityList in combinations)
             {
+                List<string> rows = new List<string>();
+
+                foreach (StockQuantity stockQuantity in stockQuantityList)
+                    rows.Add(stockQuantity.Quantity.ToString("N0"));
+
+                foreach (StockQuantity stockQuantity in stockQuantityList)
+                    rows.Add((stockQuantity.Quantity * stockQuantity.Stock.Price).ToString("C"));
+
+                foreach (StockQuantity stockQuantity in stockQuantityList)
+                    rows.Add((stockQuantity.Quantity * stockQuantity.Stock.Price / Cash).ToString("P0"));
+
                 decimal combinationCost = CombinationsGenerator.GetCombinationCost(stockQuantityList);
-                System.Console.WriteLine(string.Join("\t", stockQuantityList.Select(c => c.Quantity))
-                     + "\t$" + (Generator.Cash - combinationCost).ToString("N") + "\t$" + combinationCost.ToString("N"));
+
+                rows.Add((Generator.Cash - combinationCost).ToString("C"));
+                rows.Add(combinationCost.ToString("C"));
+                consoleTable.AddRow(rows.ToArray());
             }
+
+            consoleTable.Write(Format.Minimal);
         }
 
         private static decimal GetUserCash()
