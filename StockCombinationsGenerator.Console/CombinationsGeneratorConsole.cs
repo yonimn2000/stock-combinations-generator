@@ -10,7 +10,7 @@ namespace YonatanMankovich.StockCombinationsGenerator.Console
         private uint[]? SymbolPortfolioWeights { get; set; }
         private decimal Cash { get; set; }
         private SimpleActionConsoleMenu Menu { get; } = new SimpleActionConsoleMenu("Next action:");
-        private string ApiKey { get; set; }
+        private string ApiKey { get; set; } = string.Empty;
 
         public CombinationsGeneratorConsole()
         {
