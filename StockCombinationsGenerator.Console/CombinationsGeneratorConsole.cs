@@ -7,6 +7,7 @@ namespace YonatanMankovich.StockCombinationsGenerator.Console
     {
         private CombinationsGenerator? Generator { get; set; }
         private string[]? Symbols { get; set; }
+        private uint[]? SymbolPortfolioWeights { get; set; }
         private decimal Cash { get; set; }
         private SimpleActionConsoleMenu Menu { get; } = new SimpleActionConsoleMenu("Next action:");
         private string ApiKey { get; set; }
@@ -47,7 +48,11 @@ namespace YonatanMankovich.StockCombinationsGenerator.Console
             }
         }
 
-        private void ChangeSymbols() => ClearActionRegenerate(() => Symbols = GetUserSymbols());
+        private void ChangeSymbols() => ClearActionRegenerate(() =>
+        {
+            Symbols = GetUserSymbols();
+            SymbolPortfolioWeights = GetUserSymbolPortfolioWeights();
+        });
 
         private void ChangeCash() => ClearActionRegenerate(() => Cash = GetUserCash());
 
@@ -55,6 +60,7 @@ namespace YonatanMankovich.StockCombinationsGenerator.Console
            => ClearActionRegenerate(() =>
            {
                Symbols = GetUserSymbols();
+               SymbolPortfolioWeights = GetUserSymbolPortfolioWeights();
                Cash = GetUserCash();
            });
 
@@ -101,7 +107,7 @@ namespace YonatanMankovich.StockCombinationsGenerator.Console
             {
                 try
                 {
-                    Generator = new CombinationsGenerator(ApiKey, Symbols, Cash);
+                    Generator = new CombinationsGenerator(ApiKey, Cash, Symbols, SymbolPortfolioWeights);
                     valid = true;
                 }
                 catch (StockSymbolNotFoundException e)
@@ -194,6 +200,37 @@ namespace YonatanMankovich.StockCombinationsGenerator.Console
             while (string.IsNullOrWhiteSpace(inputString));
 
             return inputString.Trim().ToUpper().Split(' ');
+        }
+
+        private uint[]? GetUserSymbolPortfolioWeights()
+        {
+            // If there is only one stock, no need for weights.
+            if (Symbols!.Length == 1)
+                return null;
+
+            uint[] weights = new uint[0];
+            long sum = 0;
+
+            do
+            {
+                string? inputString = ConsoleHelpers.Prompt("(Optional) Enter the stock portfolio weights separated by spaces." +
+                    Environment.NewLine + $"(0-100 for each of {string.Join(' ', Symbols!)}; Must add up to 100)");
+
+                // If user did not enter anything, return null.
+                if (string.IsNullOrWhiteSpace(inputString))
+                    return null;
+
+                string[] stringWeights = inputString.Trim().ToUpper().Split(' ');
+
+                if (stringWeights.Length != Symbols!.Length)
+                    continue;
+
+                weights = stringWeights.Select(s => uint.TryParse(s, out uint result) ? result : uint.MaxValue).ToArray();
+                sum = weights.Sum(w => w);
+            }
+            while (sum != 100 || weights.Length != Symbols!.Length || weights.Any(w => w > 100));
+
+            return weights;
         }
 
         private static string GetUserApiKey()

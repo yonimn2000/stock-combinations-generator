@@ -30,21 +30,44 @@ namespace YonatanMankovich.StockCombinationsGenerator
 
         /// <summary> Creates the stock quantity combinations generator. </summary>
         /// <param name="apiKey">The <see href="https://finnhub.io"/> API Key.</param>
-        /// <param name="stockSymbols"> A list of stock ticker symbols. </param>
         /// <param name="cash"> The amount of cash available for trade. </param>
-        public CombinationsGenerator(string apiKey, IEnumerable<string> stockSymbols, decimal cash)
+        /// <param name="stockSymbols"> A list of stock ticker symbols. </param>
+        /// <param name="stockPortfolioWeights">
+        /// An optional list of stock portfolio weights, where each weight is between 0 and 100.
+        /// All weights must add up to 100.
+        /// </param>
+        public CombinationsGenerator(string apiKey, decimal cash, string[] stockSymbols, uint[] stockPortfolioWeights = null)
         {
-            StockPricesGetter = new StockPricesGetter(apiKey, stockSymbols.Distinct().ToArray());
-            StockPricesGetter.UpdatePrices();
-            MaxStockQuantities = stockSymbols.Select(symbol => new StockQuantity
+            if (stockPortfolioWeights != null)
             {
-                Stock = new Stock
+                if (stockSymbols.Length != stockPortfolioWeights.Length)
+                    throw new ArgumentException($"The number of symbols ({stockSymbols.Length}) does not match the number of weights ({stockPortfolioWeights.Length}).");
+
+                long weightsSum = stockPortfolioWeights.Sum(w => w);
+
+                if (weightsSum != 100)
+                    throw new ArgumentOutOfRangeException(nameof(stockPortfolioWeights), "Weights must add up to 100. Given : " + weightsSum);
+            }
+
+            MaxStockQuantities = new StockQuantity[stockSymbols.Length];
+            StockPricesGetter = new StockPricesGetter(apiKey, stockSymbols);
+            StockPricesGetter.UpdatePrices();
+
+            for (int i = 0; i < stockSymbols.Length; i++)
+            {
+                string symbol = stockSymbols[i];
+
+                MaxStockQuantities[i] = new StockQuantity
                 {
-                    Symbol = symbol,
-                    Price = StockPricesGetter[symbol]
-                },
-                Quantity = (uint)Math.Floor(cash / StockPricesGetter[symbol])
-            }).ToArray();
+                    Stock = new Stock
+                    {
+                        Symbol = symbol,
+                        Price = StockPricesGetter[symbol],
+                        PortfolioWeight = stockPortfolioWeights == null ? (uint?)null : stockPortfolioWeights[i]
+                    },
+                    Quantity = (uint)Math.Floor(cash / StockPricesGetter[symbol])
+                };
+            }
 
             NumberOfPossibleCombinations = GetCalculatedNumberOfPossibleCombinations();
             Cash = cash;
@@ -121,7 +144,13 @@ namespace YonatanMankovich.StockCombinationsGenerator
         /// <summary> Gets the best stock quantity combinations. </summary>
         /// <param name="top">Specifies how many combinations to return.</param>
         public IEnumerable<StockQuantity[]> GetBestCombinations(int top)
-            => Combinations.Where(c => c != null).OrderByDescending(c => GetCombinationCost(c)).Take(top).AsEnumerable();
+            => Combinations
+                .Where(c => c != null)
+                .OrderBy(c => c.Sum(q => q.Stock.PortfolioWeight.HasValue
+                                ? Math.Round(Math.Abs((100 * q.Quantity * q.Stock.Price / Cash) - q.Stock.PortfolioWeight.Value))
+                                : 0))
+                .ThenByDescending(c => GetCombinationCost(c))
+                .Take(top);
 
         /// <summary> Gets the cost of all the stocks and quantities in the given combination. </summary>
         /// <param name="combination">The given combination. </param>
