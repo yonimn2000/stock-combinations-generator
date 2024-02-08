@@ -145,10 +145,10 @@ namespace YonatanMankovich.StockCombinationsGenerator.Console
             List<string> columns = new List<string>();
 
             foreach (StockQuantity stockQuantity in firstCombination)
-                columns.Add(stockQuantity.Stock.Symbol + " (Q)");
+                columns.Add(stockQuantity.Stock.Symbol + " ($)");
 
             foreach (StockQuantity stockQuantity in firstCombination)
-                columns.Add(stockQuantity.Stock.Symbol + " ($)");
+                columns.Add(stockQuantity.Stock.Symbol + " (Q)");
 
             foreach (StockQuantity stockQuantity in firstCombination)
                 columns.Add(stockQuantity.Stock.Symbol + " (%)");
@@ -163,10 +163,10 @@ namespace YonatanMankovich.StockCombinationsGenerator.Console
                 List<string> rows = new List<string>();
 
                 foreach (StockQuantity stockQuantity in stockQuantityList)
-                    rows.Add(stockQuantity.Quantity.ToString("N0"));
+                    rows.Add((stockQuantity.Quantity * stockQuantity.Stock.Price).ToString("C"));
 
                 foreach (StockQuantity stockQuantity in stockQuantityList)
-                    rows.Add((stockQuantity.Quantity * stockQuantity.Stock.Price).ToString("C"));
+                    rows.Add(stockQuantity.Quantity.ToString("N0"));
 
                 foreach (StockQuantity stockQuantity in stockQuantityList)
                     rows.Add((stockQuantity.Quantity * stockQuantity.Stock.Price / Cash).ToString("P0"));
