@@ -95,7 +95,13 @@ namespace YonatanMankovich.StockCombinationsGenerator
             {
                 // It is much faster to get a combination cost than the combination itself.
                 if (IsCostInRange(GetCombinationCostById((ulong)id)))
-                    Combinations.Add(GetCombinationById((ulong)id));
+                {
+                    StockQuantity[] combination = GetCombinationById((ulong)id);
+
+                    // Do not store combinations that have any stocks without a quantity.
+                    if (combination.All(s => s.Quantity > 0))
+                        Combinations.Add(combination);
+                }
             });
         }
 
